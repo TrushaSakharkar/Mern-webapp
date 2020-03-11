@@ -3,9 +3,6 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 import axios from 'axios';
 
-import CreateUser from './create-user.component'
-import HomePage from './homecustomer.component'
-
 
 export default class Login extends Component {
       constructor(props) {
@@ -42,12 +39,17 @@ export default class Login extends Component {
             .then(function(res){
                if(res.data=='1')
                {
+                 alert("Not a user,pls Register");
               window.location='/create';
+               }
+               else if(res.data=='5')
+               {
+                alert("Pls enter in all the fields"); 
+                window.location='/login';
                }
                else if(res.data=='4'){
                window.location='/homecustomer';
-                localStorage.setIte
-                ("gotname",newUser.username);
+                localStorage.setItem("gotname",newUser.username);
                 console.log("register",localStorage.getItem("gotname"));
             }
             else if(res.data=='3'){
@@ -65,7 +67,6 @@ export default class Login extends Component {
     }
         render(){
             return(
-                <Router>
                 <div>
                     <form class="form-horizontal" action='' method="POST" onSubmit={this.onSubmit}>
                       <fieldset>
@@ -114,9 +115,6 @@ export default class Login extends Component {
                       </fieldset>
                     </form>
                   </div>
-                  <Route path='/create' component={CreateUser}/>
-                  <Route path='/home' component={HomePage}/>
-              </Router>
             )
         }
     }

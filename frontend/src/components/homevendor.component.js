@@ -2,13 +2,6 @@ import React,{Component} from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css"
 
-
-import Login from './login.component'
-import Newproduct from './newproduct.component'
-import Dispatched_ready from './dispatched_ready.component'
-import Showproduct from './showproduct.component'
-import Showmyproduct from './showmyproduct.component'
-
 export default class Homevendor extends Component {
 
   constructor(props) {
@@ -26,7 +19,6 @@ export default class Homevendor extends Component {
 
   render(){
       return(
-        <Router>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">vendor</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,17 +28,27 @@ export default class Homevendor extends Component {
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
-            <Link to='/showproduct' className="nav-link">show products</Link>
+        <a class="navbar-brand" href="/showproduct">Show Products</a>
+           
+            {/* <Link to='/showproduct' className="nav-link">show products</Link> */}
             </li>
             <li class="nav-item">
-              <Link to='/newproduct' className="nav-link">new products</Link>
+              {/* <Link to='/newproduct' className="nav-link">new products</Link> */}
+        <a class="navbar-brand" href='/newproduct'>Add new products</a>
 
             </li>
             <li class="nav-item">
-              <Link to='/showmyproduct' className="nav-link">show my products</Link>
+            <a class="navbar-brand" href='/showmyproduct'>Show My products</a>
+                   
+              {/* <Link to='/showmyproduct' className="nav-link">show my products</Link> */}
             </li>
             <li class="nav-item">
-              <Link to='/dispatched_ready' className="nav-link">Dispatched products</Link>
+            <a class="navbar-brand" href='/dispatched_ready'>Dispatched_ready</a>
+              {/* <Link to='/dispatched_ready' className="nav-link">Dispatch Ready</Link> */}
+            </li>
+            <li class="nav-item">
+            <a class="navbar-brand" href='/dispatched'>Dispatched</a>
+              {/* <Link to='/dispatched' className="nav-link">Dispatch Ready</Link> */}
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -75,11 +77,7 @@ export default class Homevendor extends Component {
 
         </div>
       </nav>
-      <Route path='/newproduct' component={Newproduct}/>
-      <Route path='/showproduct' component={Showproduct}/>
-      <Route path='/dispatched_ready' component={Dispatched_ready}/>
-      <Route path='/showmyproduct' component={Showmyproduct}/>
-      </Router>
+     
     )
     }
 }

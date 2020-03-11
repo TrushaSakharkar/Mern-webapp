@@ -1,7 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-var passport = require("passport");
 const mongoose = require('mongoose')
 const flash = require('connect-flash')
 
@@ -11,13 +10,12 @@ const userRoutes = express.Router();
 
 //let User = require('./models/user');
 let Userd = require('./models/userd');
+let Customer = require('./models/customer');
 let Newproduct = require('./models/newproducts');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(passport.initialize()); 
-require("../config/passport");
 
 // Connection to mongodb
 mongoose.connect('mongodb://127.0.0.1:27017/users', { useNewUrlParser: true });
@@ -40,6 +38,18 @@ userRoutes.route('/getusername').get(function(req, res) {
 // Getting all the usersTrusha
 userRoutes.route('/').get(function(req, res) {
     Userd.find(function(err, users) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.json(users);
+        }
+    });
+});
+
+// Getting all the customers
+userRoutes.route('/customers').get(function(req, res) {
+    Customer.find({vendor: saveuser},function(err, users) {
+        console.log(users);
         if (err) {
             console.log(err);
         } else {
@@ -74,9 +84,10 @@ userRoutes.route('/dispatched_ready').get(function(req, res) {
 userRoutes.route('/searchproduct1').post(function(req, res) {
     console.log(req.body.name);   
     saveproduct=req.body.name;
+    res.redirect('/')
     res.send("1");     
 });
-//searchproduct
+//searchproduct2
 userRoutes.route('/searchproduct2').get(function(req, res) {
     Newproduct.find({name: saveproduct},function(err, users) {
         console.log(users)
@@ -84,7 +95,7 @@ userRoutes.route('/searchproduct2').get(function(req, res) {
             console.log(err);
         } else {
             res.json(users);
-        }
+        }   
     });
 });
 
@@ -98,9 +109,98 @@ userRoutes.route('/showmyproduct').get(function(req, res) {
         if (err) {
             console.log(err);
         } else {
-            console.log(users);
+           // console.log(users);
             res.json(users);
         }
+    });
+});
+
+//myorder
+userRoutes.route('/myorder').get(function(req, res) {
+    console.log(saveuser);
+      Customer.find({username: saveuser},(function(err, users) {
+         // console.log(users);
+      
+          if (err) {
+              console.log(err);
+          } else {
+             // console.log(users);
+              res.json(users);
+          }
+      })
+      )
+});
+
+//status
+userRoutes.route('/status').post(function(req, res) {
+    console.log("trusha")
+    Newproduct.find({username: req.body.vendor,name:req.body.product},(function(err, users) {
+      console.log(users);
+        if(users[0].cancel==true)
+        {
+            res.send("cancel");
+        }
+        else if(users[0].dispatched==true)
+        {
+            res.send("dispatch");
+        }  
+        else if(users[0].curr_quantity==0)
+        {
+            res.send("palce");
+        }
+        else
+        {
+            vari=users[0].curr_quantity;
+            res.send(JSON.stringify(vari));
+        }
+    }))
+});
+
+//review
+userRoutes.route('/review').post(function(req, res) {
+    console.log("trusha")
+        Userd.findOne({username:req.body.vendor},(function(err, users) {
+            console.log(users)
+            var k,m,t;
+                m=req.body.review;
+               t=Number(m);
+               k=users.number*users.rating;
+               m=k+t;
+               users.number+=1;
+               k=m/users.number;
+               users.rating=k;
+               console.log(users.rating)
+               users.save();
+               // .then(console.log(users));
+        }))
+});
+
+//dispatch
+userRoutes.route('/dispatched').post(function(req, res) {
+    Newproduct.find({username:saveuser,dispatched:true},(function(err, users) {
+        if (err) {
+            console.log(err);
+        } else {
+           // console.log(users);
+            res.json(users);
+        }
+    }))
+});
+
+//cancel
+userRoutes.route('/cancel').post(function(req, res) {
+    Newproduct.findById(req.body.id,function(err, users) {
+       // users.avail_amount = req.body.avail_amount;
+        users.cancel = true;
+        users.save()
+            .then(body => {
+                res.json({
+                    body
+                });
+            })
+            .catch(err => {
+                res.status(400).send("Update not possible");
+            });
     });
 });
 
@@ -119,14 +219,75 @@ userRoutes.route('/dispatchbutton').post(function(req, res) {
                 res.status(400).send("Update not possible");
             });
     });
+});
+
+//productreview
+userRoutes.route('/productreview').post(function(req, res) {
+    console.log("hasbchas");
+    console.log(req.body);
+    Customer.findById(req.body.id,function(err, users) {
+        console.log(users);
+        users.rating=req.body.productrating;
+        users.review=req.body.productreview;
+        console.log(users);
+        users.save();
     });
+});
 
+//addtocustomer
+userRoutes.route('/addtocustomer').post(function(req, res) {
+    console.log("hasbchas");
+    tok=req;
+    console.log(req.body.value);
+    Newproduct.findById(req.body.id,function(err, users) {
+        users.curr_quantity=users.curr_quantity-req.body.value;
+        users.save();
+        let user = new Customer();
+        user.username=saveuser;
+        user.vendor=users.username;
+        user.product=users.name;
+       user.quantity=req.body.value;
+       user.rating=0;
+       user.review='fine';
+        console.log(user);
+        user.save()
+            .then(
+                user => {
+                res.status(200).json({'product': 'product added successfully'});
+            })
+            .catch(err => {
+                res.status(400).send('Error');
+            });
+    });
+});
 
-
+//edit
+userRoutes.route('/edit').post(function(req, res) {
+    console.log("hasbchas");
+    console.log(req.body.edit);
+        Customer.findById(req.body.id,function(err, users) {
+            Newproduct.findOne({username:users.vendor,name:users.product}, function(err, user){
+                if(user.curr_quantity<=0 || user.dispatched==true || user.cancel==true)
+                    {
+                        res.send("no");
+                    }
+                else
+                {
+                    user.curr_quantity=user.curr_quantity+users.quantity;
+                    user.curr_quantity=user.curr_quantity-req.body.edit;
+                    user.save();
+                     users.quantity=req.body.edit;
+                     console.log(users.quantity);
+                     users.save();
+                     res.send("yes");
+                }
+            })
+        })
+});
 
 // Adding a new user
 userRoutes.route('/add').post(function(req, res) {
-    if(!req.body.password || !req.body.username){
+    if(!(req.body.password && req.body.username && req.body.vendor)){
         console.log("HI there"+req.body.password)
        // res.status("408");
         res.send("1");
@@ -144,6 +305,8 @@ userRoutes.route('/add').post(function(req, res) {
         else{
         let user = new Userd(req.body);
         saveuser=req.body.username;
+        user.rating='0'
+        user.number=0
      //   console.log(saveuser);
             user.save()
                 .then(user => {
@@ -158,8 +321,8 @@ userRoutes.route('/add').post(function(req, res) {
                 .catch(err => {
                     res.status(400).send('Error');
                 });
-        }
-            });
+            }
+        });
     }
 });
     
@@ -172,9 +335,10 @@ userRoutes.route('/addproduct').post(function(req, res) {
      }
         else{
         let user = new Newproduct(req.body);
-            // console.log(user.quantity);
+        console.log(user.quantity);
             user.dispatched=false;
             user.ready=false;
+            user.cancel=false;
            user.curr_quantity=req.body.quantity;
             user.save()
                 .then(user => {
@@ -186,10 +350,9 @@ userRoutes.route('/addproduct').post(function(req, res) {
         }
 });
 
-
 //login for user
 userRoutes.route('/search').post(function(req, res) {
-    if(!req.body.password || !req.body.username){
+    if(!(req.body.password && req.body.username)){
         console.log("HI there"+req.body.password)
        // res.status("408");
         res.send("5");
@@ -199,34 +362,27 @@ userRoutes.route('/search').post(function(req, res) {
     Userd.find({username: req.body.username}, function(err, user){
         
         if(!user.length){
-           // alert('new user');
             console.log("New user..pls register or invalid credentials");
             res.send("1");
-           // res.status(400);
            }
         else{
             Userd.find({password: req.body.password}, function(err, userm){
-          //  res.send(user.params.vendor)
-         // console.log("sdhbfksjdbgk");
-          //console.log(userm[0].vendor);
           if(!userm.length)
-            {
                 res.send("2");
-            }
             else
             {
-        saveuser=req.body.username;
+                saveuser=req.body.username;
+                console.log(saveuser);
                 if(userm[0].vendor==='Vendor')
                 {res.send('3');}
                 else
                 {
                 res.send('4');
-
                 }
             }         
+            });
+            }
         });
-        }
-    });
      }
 });
 

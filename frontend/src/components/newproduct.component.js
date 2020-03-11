@@ -16,7 +16,7 @@ export default class Newproduct extends Component {
             name:'',
             price:'',
             quantity:'',
-            curr_quantity:'',
+            curr_quantity:0
 
         }
         console.log("hdbcadcdb");
@@ -74,15 +74,16 @@ export default class Newproduct extends Component {
             name: '',
             price: '',
             quantity: '',
-            curr_quantity: ''
+            curr_quantity: 0
         });
     
     }
 
     render() {
         return (
-            <Router>
+            
             <div>
+            <Homevendor />
                 <form class="form-horizontal" action='' method="POST" onSubmit={this.onSubmit}>
                     <fieldset>
                     <div id="legend">
@@ -148,8 +149,6 @@ export default class Newproduct extends Component {
                     </fieldset>
                 </form>
             </div>
-                  <Route path='/homevendor' component={Homevendor}/>
-            </Router>
         )
     }
 }

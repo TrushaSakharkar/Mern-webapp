@@ -1,3 +1,4 @@
+
 const mongoose = require('mongoose');
 
 let Newproduct = new mongoose.Schema({
@@ -14,12 +15,14 @@ let Newproduct = new mongoose.Schema({
         type: String
     },
     curr_quantity: {
-        type: String
+        type: Number
     },
     dispatched: {
         type: Boolean
+    },
+    cancel: {
+        type: Boolean
     }
-
 });
 
 module.exports = mongoose.model('Newproduct', Newproduct);

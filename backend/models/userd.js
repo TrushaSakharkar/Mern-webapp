@@ -9,6 +9,12 @@ let Userd = new mongoose.Schema({
     },
     vendor:{
         type: String
+    },
+    rating:{
+        type:Number
+    },
+    number:{
+        type:Number
     }
 });
 

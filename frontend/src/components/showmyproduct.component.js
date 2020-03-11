@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Homevendor from "./homevendor.component";
+
 
 export default class Showmyproduct extends Component {
     
@@ -14,6 +16,15 @@ export default class Showmyproduct extends Component {
 
     onCancel(e) {
 
+        const newUser = {
+            id:e,
+        };
+        axios.post('http://localhost:4000/cancel', newUser)
+        .then(function(res){
+            console.log(res)    
+        }).catch(function(err){
+            console.log(err);
+        });   
         console.log("hjdsvbfhewbfvcewhjbsf");
     }
 
@@ -34,6 +45,8 @@ export default class Showmyproduct extends Component {
     render() {
         return (
             <div>
+                <Homevendor />
+
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -52,7 +65,7 @@ export default class Showmyproduct extends Component {
                         this.state.products.map((currentUserd, i) => {
                             
                               
-                                if(currentUserd.curr_quantity!='0')
+                                if(currentUserd.curr_quantity!=0 && currentUserd.cancel===false)
                                 {
                                     return (
                                 <tr>

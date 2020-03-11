@@ -44,28 +44,29 @@ export default class CreateUser extends Component {
             console.log(res)
                   if(res.data=='1')
                   {
-                  window.location='/';
+                     alert("Pls enter in all the fields"); 
+                  window.location='/create';
                   }
                   else if(res.data=='2')
                 {
+                    alert("Already an user,pls login");
                   window.location='/login';
 
                 }
                 else if(res.data=='4'){
-                    //window.location='/homecustomer';
+                    window.location='/homecustomer';
                     localStorage.setItem("gotname",newUser.username);
                     console.log("register",localStorage.getItem("gotname"));
 
                 }
                 else if(res.data=='3'){
-                   // window.location='/homevendor';
+                   window.location='/homevendor';
                     localStorage.setItem("gotname",newUser.username);
                     console.log("register",localStorage.getItem("gotname"));
 
                 }
 
                 });
-        console.log("hsbcka");
 
         this.setState({
             username: '',

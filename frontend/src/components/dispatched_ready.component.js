@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Homevendor from "./homevendor.component";
+
 
 export default class Dispatched_ready extends Component {
     
@@ -44,6 +46,8 @@ export default class Dispatched_ready extends Component {
     render() {
         return (
             <div>
+                <Homevendor />
+
                 <table className="table table-striped">
                     <thead>
                         <tr>
@@ -57,7 +61,7 @@ export default class Dispatched_ready extends Component {
                         this.state.products.map((currentUserd, i)=>{
                             
                               
-                                if(currentUserd.dispatched===false)
+                                if(currentUserd.curr_quantity==0 && currentUserd.cancel===false && currentUserd.dispatched===false)
                                 {
                                     return (
                                 <tr>

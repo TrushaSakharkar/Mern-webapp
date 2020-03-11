@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import Homevendor from "./homevendor.component";
+
 
 export default class Showproduct extends Component {
     
@@ -21,6 +23,7 @@ export default class Showproduct extends Component {
     render() {
         return (
             <div>
+                <Homevendor />
                 <table className="table table-striped">
                     <thead>
                         <tr>
